@@ -8,7 +8,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "command": "C:/Users/matia/OneDrive/Documents/processing-4.3/processing-java.exe",
+      "command": "C:/Users/Administrator/Documents/processing-4.3/processing-java.exe",
       "presentation": {
         "echo": true,
         "reveal": "always",
