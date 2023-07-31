@@ -17,7 +17,7 @@ public class summerOfSines extends PApplet {
 
 // This program will be drawing epicycles 
 
-int n = 1001; // Number of circles
+int n = 10; // Number of circles
 // This is the time variable f(t); 
 float globalTime = 0; 
 
@@ -165,6 +165,7 @@ public void setup() {
             // i is the n value so we have to center it so that when i = 6, velocity is 0
             cList[i] = new circ(0, 0, c[i][0], c[i][1], i - (n / 2));
         }
+        print("Done calculating constants");
     } else {
         background(0);
         stroke(255);
@@ -306,9 +307,10 @@ public void draw() {
         if (globalTime > 2*PI) {
             globalTime = 0;
         }
-        if (keyPressed) {
+    
+        if (keyPressed) {                         
             if (key == ' ') {
-                globalTime += 0.005f;
+                globalTime += 0.02f;
             }
             //  Rest
             if (key == 'r') {
@@ -316,6 +318,18 @@ public void draw() {
                 // reset path 
                 tracer = new ArrayList<float[][]>();
             }
+            if (key == 'i'){
+                // Increase N and reset everything
+                n+=4;
+                path = new ArrayList<float[][]>();
+                tracer = new ArrayList<float[][]>();
+                background(0);
+                globalTime = 0; 
+                delay(500);
+                setup(); 
+
+            }
+
             // Exporting to a desmos graph, to a file called desmos.txt
             if (key == 'e'){
                 // Export all the sine functions to a file
