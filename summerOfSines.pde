@@ -6,7 +6,7 @@ float globalTime = 0;
 
 boolean drawPath = false;
 
-// Circle class 
+// Circle/Vector/Epicycle class 
 class circ {
     // Coordinates of the points 
     float x, y; 
@@ -81,9 +81,7 @@ class circ {
 // This will be defining our function f(t)
 float[] f; 
 // List of the constants used in the fourier series
-// Some random values for now  
-float[][] c; // = {{10,10}, {10,90}, {10,10}, {40,40}, {90,90}, {40,40}, {30,70}, {40,40}, {40,40}, {40,40}, {40,40}}; 
-
+float[][] c;
 // List of the circles
 circ[] cList;
 
@@ -136,6 +134,7 @@ void setup() {
         readPath();
 
         addExtraPoints();
+        regularInterval(); 
         
         c = new float[n][2];
         // Calculate the constants
@@ -189,16 +188,34 @@ void addExtraPoints() {
 
 }
 
+void regularInterval(){
+    ArrayList <float[][]> temp = new ArrayList<float[][]>();
+    float distance = 0; 
+    for (int i = 0; i < path.size()-1; i++){
+        distance += sqrt(pow(path.get(i)[0][0] - path.get(i+1)[0][0], 2) + pow(path.get(i)[0][1] - path.get(i+1)[0][1], 2));
+        if (distance > 1){
+            temp.add(path.get(i));
+            distance = 0;
+        }
+    }
+    path = temp;
+}
+
+
 void draw() {     
     // Display the number of circles
     if (drawPath) {
         if (mousePressed) {
             float[][] temp = {{mouseX - 500, 500 - mouseY} };
-            ellipse(mouseX, mouseY, 10, 10);
+            noFill(); 
+            ellipse(mouseX, mouseY, 3, 3);
+            // Also draw the lines 
             if (path.size() == 0) {
                 path.add(temp);
             } if (path.get(path.size() - 1)[0][0] != temp[0][0] || path.get(path.size() - 1)[0][1] != temp[0][1]) {
                 path.add(temp);
+                // draw line from current to prevoius
+                line(path.get(path.size() - 2)[0][0] + 500, 500 - path.get(path.size() - 2)[0][1], temp[0][0] + 500, 500 - temp[0][1]);
             }
         }
         if (keyPressed) {
@@ -228,6 +245,9 @@ void draw() {
         for (int i = 0; i < path.size() - 1; i++) {
             strokeWeight(1); 
             line(500 + path.get(i)[0][0], 500 - path.get(i)[0][1], 500 + path.get(i + 1)[0][0], 500 - path.get(i + 1)[0][1]);
+            // Draw the points
+            strokeWeight(2);
+            point(500 + path.get(i)[0][0], 500 - path.get(i)[0][1]);
         }
         
         // Draw all circles
@@ -242,8 +262,6 @@ void draw() {
             stroke(70); 
             noFill(); 
             circle(prevX, prevY, cList[i].radius * 2);
-            
-            
             
             stroke(255, 255, 255, 100);
             noFill();
@@ -267,8 +285,6 @@ void draw() {
             float[][] temp2 = tracer.get(i + 1);
             line(temp[0][0], temp[0][1], temp2[0][0], temp2[0][1]);
         }
-        
-        
         
         if (globalTime > 2*PI) {
             globalTime = 0;
